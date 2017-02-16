@@ -2,10 +2,9 @@ package main
 
 import (
 	"crypto/rand"
-	"encoding/hex"
-	"errors"
 	"fmt"
-	"regexp"
+	"strconv"
+	"time"
 )
 
 // The UUID reserved variants.
@@ -16,44 +15,19 @@ const (
 // UUID type declared as a slice of bytes with 16 bits
 type UUID [16]byte
 
-// Pattern used to parse hex string representation of the UUID.
-const hexPattern = "^(urn\\:uuid\\:)?\\{?([a-z0-9]{8})-([a-z0-9]{4})-" +
-	"([1-5][a-z0-9]{3})-([a-z0-9]{4})-([a-z0-9]{12})\\}?$"
-
-var re = regexp.MustCompile(hexPattern)
-
-// ParseHex creates a UUID object from given hex string
-// representation. Function accepts UUID string in following
-// formats:
-//
-//     uuid.ParseHex("6ba7b814-9dad-11d1-80b4-00c04fd430c8")
-//     uuid.ParseHex("{6ba7b814-9dad-11d1-80b4-00c04fd430c8}")
-//     uuid.ParseHex("urn:uuid:6ba7b814-9dad-11d1-80b4-00c04fd430c8")
-//
-func ParseHex(s string) (u *UUID, err error) {
-	md := re.FindStringSubmatch(s)
-	if md == nil {
-		err = errors.New("Invalid UUID string")
-		return
-	}
-	hash := md[2] + md[3] + md[4] + md[5] + md[6]
-	b, err := hex.DecodeString(hash)
+// NewIDSortable generates a random UUID.
+func NewIDSortable() (ut string, err error) {
+	u := new(UUID)
+	// Set all bits to randomly (or pseudo-randomly) chosen values.
+	_, err = rand.Read(u[:])
 	if err != nil {
 		return
 	}
-	u = new(UUID)
-	copy(u[:], b)
-	return
-}
+	u.setVariant(ReservedRFC4122)
+	u.setVersion(4)
 
-// Parse creates a UUID object from given bytes slice.
-func Parse(b []byte) (u *UUID, err error) {
-	if len(b) != 16 {
-		err = errors.New("Given slice is not valid UUID sequence")
-		return
-	}
-	u = new(UUID)
-	copy(u[:], b)
+	ut = strconv.FormatInt(time.Now().UnixNano(), 10) + "-" + u.String()
+
 	return
 }
 
@@ -77,8 +51,7 @@ func (u *UUID) setVariant(v byte) {
 }
 
 // Variant returns the UUID Variant, which determines the internal
-// layout of the UUID. This will be one of the constants: RESERVED_NCS,
-// RFC_4122, RESERVED_MICROSOFT, RESERVED_FUTURE.
+// layout of the UUID.
 func (u *UUID) Variant() byte {
 	return ReservedRFC4122
 }
