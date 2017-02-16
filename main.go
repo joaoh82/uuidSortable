@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/pkg/profile"
+
+	. "github.com/joaoh82/uuidSortable/uuid"
 )
 
 // Number of ids we are going to create in this test application
