@@ -1,6 +1,8 @@
 # uuidSortable
 [WIP] Package to generate a Sortable UUID based on RFC 4122 with a timestamp.
 
+https://goreportcard.com/report/github.com/joaoh82/uuidsortable
+
 The main.go file is an example of a usage generating 1000 UUID in less then one second.
 
 This code generates a UUID with a sortable timestamp.
