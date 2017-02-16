@@ -15,4 +15,4 @@ In the example there is also profiling enabled to check for memory usage.
 
 ## Maintainer
 
-Created in 2017 by João Henrique Machado Silva joaoh82@gmail.com. Under the MIT License.
+Created in 2017 by João Henrique Machado Silva joaoh82@gmail.com @joaoh82. Under the MIT License.
